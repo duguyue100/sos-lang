@@ -1,6 +1,9 @@
+# type: ignore
+# ruff: noqa
 from __future__ import annotations
 
 from sly import Lexer
+from sly.lex import Token
 
 
 class SOSLexer(Lexer):
@@ -74,12 +77,12 @@ class SOSLexer(Lexer):
     COLON = r":"
 
     @_(r"\d+")
-    def NUMBER(self, t):
+    def NUMBER(self, t: Token) -> Token:
         t.value = int(t.value)
         return t
 
     @_(r'"[^"]*"')
-    def STRING(self, t):
+    def STRING(self, t: Token) -> Token:
         t.value = str(t.value)
         return t
 
@@ -88,7 +91,7 @@ class SOSLexer(Lexer):
 
     # Line number tracking
     @_(r"\n+")
-    def ignore_newline(self, t):
+    def ignore_newline(self, t: Token) -> None:
         self.lineno += t.value.count("\n")
 
 
