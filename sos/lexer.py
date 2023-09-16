@@ -76,9 +76,13 @@ class SOSLexer(Lexer):
     SEMI = r";"
     COLON = r":"
 
-    @_(r"\d+")
+    # Number rule for both integers and floats
+    @_(r"\d*\.\d+", r"\d+")
     def NUMBER(self, t: Token) -> Token:
-        t.value = int(t.value)
+        if t.value.count(".") == 1:
+            t.value = float(t.value)
+        else:
+            t.value = int(t.value)
         return t
 
     @_(r'"[^"]*"')
@@ -96,7 +100,7 @@ class SOSLexer(Lexer):
 
 
 if __name__ == "__main__":
-    data = "x = 3 + 42 * (s - t)"
+    data = "x = 3.21231 + 42 * (s - t)"
     lexer = SOSLexer()
     for tok in lexer.tokenize(data):
         print(f"type={tok.type!r}, value={tok.value!r}")
